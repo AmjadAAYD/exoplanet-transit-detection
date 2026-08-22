@@ -36,36 +36,41 @@ def _default_duration_grid(min_period: float) -> np.ndarray:
     return grid[grid < 0.5 * min_period]
 
 
-def _build_period_grid(
+def _effective_frequency_factor(
     time: np.ndarray,
     min_period: float,
     max_period: float,
-    n_oversample: float = 5.0,
-    max_grid_points: int = 200_000,
-) -> np.ndarray:
-    """Build a period grid oversampled relative to the natural frequency
-    resolution of the observing baseline (1/baseline), rather than using
-    astropy's BoxLeastSquares.autopower default.
+    duration_grid: np.ndarray,
+    frequency_factor: float,
+    max_grid_points: int,
+) -> float:
+    """Raise frequency_factor only as far as needed to keep the period grid tractable.
 
-    autopower's frequency step scales as frequency_factor * min(duration)
-    / baseline**2. That is fine for a single-quarter or single-sector
-    baseline, but for a multi-year stitched baseline (Kepler-90, several
-    years) combined with a short minimum duration (tens of minutes), it
-    produces tens of millions of grid points and effectively hangs. This
-    grid instead scales with 1/baseline, the standard frequency resolution
-    for a periodic search, oversampled by n_oversample, and stays bounded
-    by max_grid_points regardless of baseline or duration.
+    astropy's BoxLeastSquares.autoperiod sets its frequency step to
+    df = frequency_factor * min(duration) / baseline**2 (see astropy's
+    timeseries/periodograms/bls/core.py). That duration-aware spacing is
+    correct and necessary: a narrow transit needs finer period sampling
+    to avoid drifting out of phase over many cycles, which is exactly why
+    a naive 1/baseline-only grid (tried first, see git history) silently
+    lost TRAPPIST-1's known periods by under-resolving them.
+
+    The problem is only that this formula's grid size can explode for a
+    long, multi-quarter/multi-year baseline (e.g. Kepler-90's ~4 years)
+    combined with a short minimum duration, producing tens of millions of
+    points. Rather than replace astropy's formula, this only increases
+    frequency_factor, and only when the requested value would exceed
+    max_grid_points, which coarsens the correct duration-aware grid
+    rather than substituting a differently-shaped one.
     """
     baseline = np.max(time) - np.min(time)
-    df = 1.0 / (n_oversample * baseline)
-    f_min = 1.0 / max_period
-    f_max = 1.0 / min_period
-    n_freq = int(np.ceil((f_max - f_min) / df))
-    if n_freq > max_grid_points:
-        df = (f_max - f_min) / max_grid_points
-        n_freq = max_grid_points
-    freqs = f_min + df * np.arange(1, n_freq + 1)
-    return np.sort(1.0 / freqs)
+    min_duration = np.min(duration_grid)
+    df = frequency_factor * min_duration / baseline**2
+    f_min, f_max = 1.0 / max_period, 1.0 / min_period
+    n_freq = (f_max - f_min) / df
+    if n_freq <= max_grid_points:
+        return frequency_factor
+    required_df = (f_max - f_min) / max_grid_points
+    return required_df * baseline**2 / min_duration
 
 
 def run_bls(
@@ -74,21 +79,31 @@ def run_bls(
     min_period: float,
     max_period: float,
     duration_grid: np.ndarray = None,
-    n_oversample: float = 5.0,
+    frequency_factor: float = 5.0,
+    max_grid_points: int = 200_000,
 ):
     """Run a single BLS search over a period range, return the model and best-fit result.
 
-    n_oversample controls period-grid density relative to the natural
-    frequency resolution of the observing baseline (higher = finer grid
-    = slower but less alias risk). See _build_period_grid for why this
-    replaces astropy's autopower.
+    frequency_factor controls period-grid density (astropy's autopower
+    convention: higher = coarser grid = faster but more alias risk).
+    Automatically raised above the requested value, but never lowered,
+    if the resulting grid would exceed max_grid_points, see
+    _effective_frequency_factor.
     """
     if duration_grid is None:
         duration_grid = _default_duration_grid(min_period)
 
+    effective_ff = _effective_frequency_factor(
+        time, min_period, max_period, duration_grid, frequency_factor, max_grid_points,
+    )
+
     model = BoxLeastSquares(time * u.day, flux)
-    period_grid = _build_period_grid(time, min_period, max_period, n_oversample=n_oversample)
-    periodogram = model.power(period_grid * u.day, duration_grid * u.day)
+    periodogram = model.autopower(
+        duration_grid * u.day,
+        minimum_period=min_period * u.day,
+        maximum_period=max_period * u.day,
+        frequency_factor=effective_ff,
+    )
     best_idx = np.argmax(periodogram.power)
     stats = model.compute_stats(
         periodogram.period[best_idx],
@@ -127,7 +142,8 @@ def iterative_bls_search(
     max_period: float,
     min_snr: float | None = None,
     duration_grid: np.ndarray = None,
-    n_oversample: float = 5.0,
+    frequency_factor: float = 5.0,
+    max_grid_points: int = 200_000,
 ):
     """Run BLS, mask the detected transits, repeat, up to n_iterations times.
 
@@ -152,7 +168,8 @@ def iterative_bls_search(
             min_period=min_period,
             max_period=max_period,
             duration_grid=duration_grid,
-            n_oversample=n_oversample,
+            frequency_factor=frequency_factor,
+            max_grid_points=max_grid_points,
         )
         if min_snr is not None and detection.snr < min_snr:
             break
