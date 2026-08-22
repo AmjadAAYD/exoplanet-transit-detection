@@ -1,6 +1,6 @@
 # exoplanet-transit-detection (ExoDetect)
 
-Finding real planets in raw NASA light curves — not the pre-cleaned Kaggle set.
+Finding real planets in raw NASA light curves, not the pre-cleaned Kaggle set.
 
 Pulls raw light curves directly from the MAST archive via [`lightkurve`](https://docs.lightkurve.org/), detrends them,
 runs a classical Box Least Squares (BLS) transit search, validates recovered orbital periods against published values
@@ -17,10 +17,10 @@ Work in progress. See `docs/plan.md` for the full project plan and build order.
 
 ## Structure
 
-- `src/exodetect/` — pipeline package (data retrieval, detrending, BLS, classifier, physical characterization)
-- `notebooks/` — exploratory and validation notebooks
-- `docs/` — plan and write-up
-- `tests/` — unit tests
+- `src/exodetect/`: pipeline package (data retrieval, detrending, BLS, classifier, physical characterization)
+- `notebooks/`: exploratory and validation notebooks
+- `docs/`: plan and write-up
+- `tests/`: unit tests
 
 ## Citations
 
