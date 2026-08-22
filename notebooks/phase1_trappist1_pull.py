@@ -24,7 +24,7 @@ os.makedirs(out_dir, exist_ok=True)
 
 fig, ax = plt.subplots(figsize=(12, 4))
 lc.plot(ax=ax)
-ax.set_title("TRAPPIST-1 raw light curve — K2 Campaign 12 (60s cadence)")
+ax.set_title("TRAPPIST-1 raw light curve, K2 Campaign 12 (60s cadence)")
 fig.tight_layout()
 out_path = os.path.join(out_dir, "trappist1_raw.png")
 fig.savefig(out_path, dpi=150)
