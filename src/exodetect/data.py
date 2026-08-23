@@ -56,3 +56,33 @@ def get_light_curve(
     lc = search.download()
     lc.to_fits(path=cache_path, overwrite=True)
     return lc
+
+
+def get_stitched_light_curve(
+    cache_key: str,
+    target_name: str,
+    mission: str | None = None,
+    author: str | None = None,
+    exptime=None,
+):
+    """Download every matching quarter/sector/campaign, stitch into one
+    normalized LightCurve, or load the stitched result from a local cache.
+
+    Needed for long-period targets (e.g. Kepler-90, Kepler-186) where a
+    single quarter's baseline is too short to catch even one transit of
+    the outer planets, unlike get_light_curve() which only grabs the
+    first matching file.
+    """
+    os.makedirs(_CACHE_DIR, exist_ok=True)
+    cache_path = os.path.join(_CACHE_DIR, f"{cache_key}.fits")
+
+    if os.path.exists(cache_path):
+        return lk.read(cache_path)
+
+    search = lk.search_lightcurve(target_name, mission=mission, author=author, exptime=exptime)
+    if len(search) == 0:
+        raise ValueError(f"No light curve products found for {target_name!r} (mission={mission!r})")
+    collection = search.download_all()
+    stitched = collection.stitch()
+    stitched.to_fits(path=cache_path, overwrite=True)
+    return stitched
