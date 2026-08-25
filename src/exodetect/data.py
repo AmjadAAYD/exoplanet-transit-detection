@@ -86,3 +86,36 @@ def get_stitched_light_curve(
     stitched = collection.stitch()
     stitched.to_fits(path=cache_path, overwrite=True)
     return stitched
+
+
+def get_multi_quarter_light_curve(
+    cache_key: str,
+    target_name: str,
+    max_quarters: int,
+    mission: str | None = None,
+    author: str | None = None,
+    exptime=None,
+):
+    """Download up to max_quarters matching quarters/sectors, stitched into
+    one LightCurve, or load the stitched result from a local cache.
+
+    A middle ground between get_light_curve (a single file, too little
+    baseline to reliably catch several transits for a training-set target)
+    and get_stitched_light_curve (every available quarter, too expensive
+    to do for a whole batch of training targets). Several quarters gives
+    enough transits for a stable depth measurement without downloading a
+    full multi-year baseline per target.
+    """
+    os.makedirs(_CACHE_DIR, exist_ok=True)
+    cache_path = os.path.join(_CACHE_DIR, f"{cache_key}.fits")
+
+    if os.path.exists(cache_path):
+        return lk.read(cache_path)
+
+    search = lk.search_lightcurve(target_name, mission=mission, author=author, exptime=exptime)
+    if len(search) == 0:
+        raise ValueError(f"No light curve products found for {target_name!r} (mission={mission!r})")
+    collection = search[: min(max_quarters, len(search))].download_all()
+    stitched = collection.stitch()
+    stitched.to_fits(path=cache_path, overwrite=True)
+    return stitched

@@ -10,6 +10,25 @@ looks like.
 import lightkurve as lk
 
 
+def choose_flatten_window(period: float, duration: float, cadence: float) -> int:
+    """Pick a Savitzky-Golay window (in cadences) sized for this target's period/duration.
+
+    Wide enough to comfortably exceed the transit duration (so the filter
+    does not flatten the transit itself away), narrow enough to stay well
+    below the orbital period (so it does not wash out the periodic signal
+    it is trying to detect). Needed when detrending targets spanning a
+    wide range of periods and durations (e.g. training-set KOIs from 1 to
+    50 days), where a single fixed window works for some targets and
+    breaks others.
+    """
+    target_days = max(duration * 3, 0.3)
+    target_days = min(target_days, period * 0.3)
+    cadences = int(round(target_days / cadence))
+    if cadences % 2 == 0:
+        cadences += 1
+    return max(cadences, 5)
+
+
 def detrend_light_curve(
     lc,
     window_length: int = 401,
