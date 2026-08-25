@@ -13,19 +13,20 @@ const summary = [
 ---
 
 <section class="section" id="validation">
-  <div class="container">
-    <p class="eyebrow">Step 1: reproduce known discoveries</p>
+  <div class="wrap">
+    <p class="kicker">Step 1: reproduce known discoveries</p>
     <h2>Recovering real planets from raw photometry</h2>
     <p>
-      Before pointing this at anything unknown, it has to find planets we already know are there. Three systems,
-      raw K2/Kepler light curves, the same classical Box Least Squares search astronomers use, no shortcuts.
+      Before pointing this at anything unknown, it has to find planets we already know are there. Three
+      systems, raw K2/Kepler light curves, the same classical Box Least Squares search astronomers use, no
+      shortcuts.
     </p>
 
-    <div class="summary-row">
+    <div class="stat-row">
       {summary.map((s) => (
-        <div class="card summary-card">
-          <div class="summary-num">{s.recovered}<span class="summary-den">/{s.total}</span></div>
-          <div class="summary-label">{s.system}</div>
+        <div class="stat">
+          <span class="stat-num">{s.recovered}<span class="stat-den">/{s.total}</span></span>
+          <span class="stat-label">{s.system}</span>
         </div>
       ))}
     </div>
@@ -33,71 +34,57 @@ const summary = [
     {Object.entries(bySystem).map(([system, rows]) => (
       <div class="system-block">
         <h3>{system}</h3>
-        <div class="table-wrap card">
-          <table>
-            <thead>
+        <table>
+          <thead>
+            <tr>
+              <th>Planet</th>
+              <th class="num">Published (d)</th>
+              <th class="num">Recovered (d)</th>
+              <th class="num">Error</th>
+              <th>Result</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
               <tr>
-                <th>Planet</th>
-                <th class="num">Published period (d)</th>
-                <th class="num">Recovered period (d)</th>
-                <th class="num">Error</th>
-                <th>Result</th>
+                <td>{r.planet}</td>
+                <td class="num">{r.published_period_days.toFixed(6)}</td>
+                <td class="num">{r.recovered_period_days ? r.recovered_period_days.toFixed(6) : "—"}</td>
+                <td class="num">{r.error_percent !== null && r.error_percent !== undefined ? `${r.error_percent > 0 ? "+" : ""}${r.error_percent}%` : "—"}</td>
+                <td>
+                  {r.matched ? (
+                    <span class="mark mark-good">✓ recovered</span>
+                  ) : (
+                    <span class="mark mark-bad">— not recovered</span>
+                  )}
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {rows.map((r) => (
-                <tr>
-                  <td>{r.planet}</td>
-                  <td class="num">{r.published_period_days.toFixed(6)}</td>
-                  <td class="num">{r.recovered_period_days ? r.recovered_period_days.toFixed(6) : "—"}</td>
-                  <td class="num">{r.error_percent !== null && r.error_percent !== undefined ? `${r.error_percent > 0 ? "+" : ""}${r.error_percent}%` : "—"}</td>
-                  <td>
-                    {r.matched ? (
-                      <span class="tag tag-good">recovered</span>
-                    ) : (
-                      <span class="tag tag-bad">not recovered</span>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+            ))}
+          </tbody>
+        </table>
       </div>
     ))}
 
     <p class="note">
-      TRAPPIST-1 f, and Kepler-90 g and h were not recovered, most likely noise or aliasing after the stronger
-      signals in each system were masked out during the iterative search. Reported as misses, not hidden.
-      Full data: <a href="https://github.com/AmjadAAYD/exoplanet-transit-detection/blob/main/docs/validation_table.csv">validation_table.csv</a>.
+      TRAPPIST-1 f, and Kepler-90 g and h were not recovered, most likely noise or aliasing after the
+      stronger signals in each system were masked out during the iterative search. Reported as misses, not
+      hidden. Full data: <a href="https://github.com/AmjadAAYD/exoplanet-transit-detection/blob/main/docs/validation_table.csv">validation_table.csv</a>.
     </p>
   </div>
 </section>
 
 <style>
-  .summary-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    margin: 32px 0 40px;
+  .stat-row {
+    display: flex;
+    gap: 56px;
+    margin: 40px 0 48px;
+    flex-wrap: wrap;
   }
-  .summary-card { text-align: center; }
-  .summary-num {
-    font-size: 2.4rem;
-    font-weight: 700;
-    color: var(--accent);
-    font-variant-numeric: tabular-nums;
-  }
-  .summary-den { color: var(--text-dim); font-size: 1.4rem; }
-  .summary-label { color: var(--text-dim); font-size: 0.9rem; margin-top: 4px; }
-  .system-block { margin-bottom: 28px; }
-  .system-block h3 { font-size: 1.1rem; margin-bottom: 12px; }
-  .table-wrap { padding: 0; overflow-x: auto; }
-  .table-wrap table { min-width: 520px; }
-  .table-wrap td, .table-wrap th { padding: 12px 16px; }
-  .note { font-size: 0.9rem; margin-top: 24px; }
+  .system-block { margin-bottom: 40px; }
+  .system-block h3 { margin-bottom: 14px; font-style: italic; }
+  .note { font-size: 0.95rem; margin-top: 28px; color: var(--ink-dim); }
 
-  @media (max-width: 640px) {
-    .summary-row { grid-template-columns: 1fr; }
+  @media (max-width: 560px) {
+    .stat-row { gap: 32px; }
   }
 </style>

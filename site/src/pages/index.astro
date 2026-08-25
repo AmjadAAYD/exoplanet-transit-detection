@@ -17,8 +17,8 @@ import Demo from "../components/Demo";
   <DiscoverySection />
 
   <section class="section" id="demo">
-    <div class="container">
-      <p class="eyebrow">Try it</p>
+    <div class="wrap">
+      <p class="kicker">Try it</p>
       <h2>Explore the results yourself</h2>
       <p>
         Pick a system to see its real, phase-folded light curve and the periodogram this pipeline searched to find
@@ -30,8 +30,8 @@ import Demo from "../components/Demo";
   </section>
 
   <footer class="section">
-    <div class="container">
-      <p class="eyebrow">Method &amp; code</p>
+    <div class="wrap">
+      <p class="kicker">Method &amp; code</p>
       <h2>How it works</h2>
       <ol class="method-list">
         <li><strong>Retrieve</strong> raw light curves from MAST via <code>lightkurve</code>.</li>
@@ -57,18 +57,22 @@ import Demo from "../components/Demo";
 
 <style>
   .method-list {
-    padding-left: 20px;
-    margin: 24px 0;
+    padding-left: 22px;
+    margin: 28px 0;
+    max-width: var(--measure);
   }
   .method-list li {
-    margin-bottom: 10px;
-    color: var(--text-dim);
+    margin-bottom: 12px;
+    color: var(--ink-dim);
   }
-  .method-list strong { color: var(--text); }
+  .method-list strong { color: var(--ink); font-style: italic; }
   .citations {
-    font-size: 0.82rem;
-    margin-top: 28px;
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    color: var(--ink-faint);
+    margin-top: 32px;
     padding-top: 20px;
-    border-top: 1px solid var(--border);
+    border-top: 1px solid var(--rule);
+    line-height: 1.8;
   }
 </style>

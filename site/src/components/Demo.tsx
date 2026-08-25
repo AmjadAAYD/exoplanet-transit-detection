@@ -77,32 +77,26 @@ export default function Demo() {
     <div className="demo">
       <div className="picker">
         <div className="picker-group">
-          <div className="picker-group-label">Validation systems</div>
-          <div className="picker-buttons">
-            {validationTargets.map((t) => (
-              <button
-                key={t.slug}
-                className={`pick-btn ${selected === t.slug ? "active" : ""}`}
-                onClick={() => setSelected(t.slug)}
-              >
+          <span className="picker-group-label">Validation systems</span>
+          {validationTargets.map((t, i) => (
+            <span key={t.slug}>
+              {i > 0 && <span className="sep">·</span>}
+              <button className={`pick-link ${selected === t.slug ? "active" : ""}`} onClick={() => setSelected(t.slug)}>
                 {t.name}
               </button>
-            ))}
-          </div>
+            </span>
+          ))}
         </div>
         <div className="picker-group">
-          <div className="picker-group-label">Unconfirmed TESS candidates</div>
-          <div className="picker-buttons">
-            {discoveryTargets.map((t) => (
-              <button
-                key={t.slug}
-                className={`pick-btn ${selected === t.slug ? "active" : ""}`}
-                onClick={() => setSelected(t.slug)}
-              >
+          <span className="picker-group-label">Unconfirmed TESS candidates</span>
+          {discoveryTargets.map((t, i) => (
+            <span key={t.slug}>
+              {i > 0 && <span className="sep">·</span>}
+              <button className={`pick-link ${selected === t.slug ? "active" : ""}`} onClick={() => setSelected(t.slug)}>
                 {t.name}
               </button>
-            ))}
-          </div>
+            </span>
+          ))}
         </div>
       </div>
 
@@ -114,32 +108,32 @@ export default function Demo() {
           <p className="demo-headline">{data.headline}</p>
 
           <div className="chart-row">
-            <div className="card chart-card">
-              <div className="chart-title">Real light curve, phase-folded</div>
+            <figure className="chart-figure">
+              <figcaption>Real light curve, phase-folded</figcaption>
               <LineChart
                 x={data.phase_hours}
                 y={data.folded_flux}
                 xLabel="Hours from mid-transit"
                 yLabel="Normalized flux"
-                color="#5ec9ff"
+                variant="primary"
               />
-            </div>
-            <div className="card chart-card">
-              <div className="chart-title">BLS periodogram (bounded search)</div>
+            </figure>
+            <figure className="chart-figure">
+              <figcaption>BLS periodogram (bounded search)</figcaption>
               <LineChart
                 x={data.periodogram_period}
                 y={data.periodogram_power}
                 xLabel="Period (days)"
                 yLabel="Power"
-                color="#ffb454"
+                variant="secondary"
                 markX={data.recovered_period ?? data.catalog_period}
                 markLabel="recovered"
               />
-            </div>
+            </figure>
           </div>
 
           {data.category === "validation" ? (
-            <div className="card verdict-card">
+            <div className="verdict">
               <div className="verdict-row">
                 <div>
                   <div className="verdict-label">Published period</div>
@@ -160,15 +154,15 @@ export default function Demo() {
               </div>
             </div>
           ) : (
-            <div className="card verdict-card">
+            <div className="verdict">
               <div className="verdict-row">
                 <div>
                   <div className="verdict-label">Independently recovered</div>
                   <div className="verdict-val">
                     {data.recovered_by_pipeline ? (
-                      <span className="tag tag-good">yes, by our BLS</span>
+                      <span className="mark mark-good">✓ yes, by our BLS</span>
                     ) : (
-                      <span className="tag tag-bad">no, catalog depth used</span>
+                      <span className="mark mark-bad">— no, catalog depth used</span>
                     )}
                   </div>
                 </div>
@@ -189,42 +183,70 @@ export default function Demo() {
                   <div className="verdict-val">{data.hz_verdict}</div>
                 </div>
               </div>
-              <div className="caveat demo-caveat">
+              <p className="caveat demo-caveat">
                 <strong>Not a confirmed planet.</strong> {data.caveat}
-              </div>
+              </p>
             </div>
           )}
         </div>
       )}
 
       <style>{`
-        .demo-status { color: var(--text-dim); padding: 20px 0; }
-        .picker { display: flex; flex-direction: column; gap: 16px; margin-bottom: 28px; }
-        .picker-group-label { font-size: 0.82rem; color: var(--text-dim); margin-bottom: 8px; }
-        .picker-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
-        .pick-btn {
-          background: var(--bg-panel);
-          border: 1px solid var(--border);
-          color: var(--text);
-          padding: 8px 14px;
-          border-radius: 999px;
-          font-size: 0.86rem;
-          cursor: pointer;
-          transition: all 0.15s ease;
+        .demo-status { color: var(--ink-dim); padding: 20px 0; }
+        .picker { margin-bottom: 36px; }
+        .picker-group { margin-bottom: 10px; line-height: 2.2; }
+        .picker-group-label {
+          font-family: var(--font-mono);
+          font-size: 0.72rem;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          color: var(--ink-faint);
+          margin-right: 14px;
         }
-        .pick-btn:hover { border-color: var(--accent-2); }
-        .pick-btn.active { background: var(--accent-2); border-color: var(--accent-2); color: #0b0e17; font-weight: 600; }
-        .demo-body h3 { margin-bottom: 2px; }
-        .demo-headline { color: var(--text-dim); margin-bottom: 20px; }
-        .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
-        .chart-card { padding: 16px; }
-        .chart-title { font-size: 0.82rem; color: var(--text-dim); margin-bottom: 10px; }
+        .sep { color: var(--ink-faint); margin: 0 8px; }
+        .pick-link {
+          background: none;
+          border: none;
+          padding: 0;
+          font-family: var(--font-serif);
+          font-size: 1.02rem;
+          color: var(--ink-dim);
+          cursor: pointer;
+          text-decoration: underline;
+          text-decoration-color: transparent;
+          text-underline-offset: 3px;
+        }
+        .pick-link:hover { color: var(--ink); text-decoration-color: var(--rule-strong); }
+        .pick-link.active { color: var(--accent); font-weight: 600; text-decoration-color: var(--accent); }
+        .demo-body h3 { margin-bottom: 2px; font-style: italic; }
+        .demo-headline { color: var(--ink-dim); margin-bottom: 24px; }
+        .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 32px; }
+        .chart-figure figcaption {
+          font-family: var(--font-mono);
+          font-size: 0.72rem;
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+          color: var(--ink-faint);
+          margin: 0 0 10px;
+        }
         .linechart { width: 100%; height: auto; }
-        .verdict-card { padding: 20px 24px; }
-        .verdict-row { display: flex; flex-wrap: wrap; gap: 24px; }
-        .verdict-label { font-size: 0.78rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 4px; }
-        .verdict-val { font-size: 1.05rem; font-weight: 600; font-variant-numeric: tabular-nums; }
-        .demo-caveat { margin-top: 18px; }
+        .verdict { border-top: 1px solid var(--rule); padding-top: 20px; }
+        .verdict-row { display: flex; flex-wrap: wrap; gap: 28px; }
+        .verdict-label {
+          font-family: var(--font-mono);
+          font-size: 0.7rem;
+          color: var(--ink-faint);
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+          margin-bottom: 5px;
+        }
+        .verdict-val {
+          font-family: var(--font-mono);
+          font-size: 1rem;
+          font-variant-numeric: tabular-nums;
+          color: var(--ink);
+        }
+        .demo-caveat { margin-top: 18px; margin-bottom: 0; }
 
         @media (max-width: 640px) {
           .chart-row { grid-template-columns: 1fr; }
