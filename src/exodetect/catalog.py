@@ -67,6 +67,37 @@ def fetch_koi_sample(disposition: str, limit: int, min_period: float = 1.0, max_
     return df.head(limit)
 
 
+def fetch_toi_candidates(limit: int, max_period: float = 15.0) -> pd.DataFrame:
+    """Fetch a batch of TESS Objects of Interest still listed as planet candidates.
+
+    tfopwg_disp='PC' means flagged by the TESS pipeline but not yet
+    confirmed as a planet or ruled out as a false positive, real
+    unconfirmed candidates, not the Kaggle set. Restricting to
+    max_period keeps the batch to targets where a single TESS sector
+    (about 27 days) catches multiple transits, and requiring stellar
+    radius/logg/Teff keeps the batch to targets we can physically
+    characterize once a transit is found.
+    """
+    query = (
+        "select tid, toi, pl_orbper, pl_orbpererr1, pl_orbpererr2, "
+        "pl_tranmid, pl_tranmiderr1, pl_tranmiderr2, "
+        "pl_trandurh, pl_trandurherr1, pl_trandurherr2, "
+        "pl_trandep, pl_trandeperr1, pl_trandeperr2, "
+        "pl_rade, pl_radeerr1, pl_radeerr2, pl_eqt, pl_insol, "
+        "st_rad, st_raderr1, st_raderr2, "
+        "st_teff, st_tefferr1, st_tefferr2, "
+        "st_logg, st_loggerr1, st_loggerr2, "
+        "st_dist, sectors "
+        "from toi "
+        f"where tfopwg_disp='PC' and pl_orbper between 0.5 and {max_period} "
+        "and st_rad is not null and st_teff is not null and st_logg is not null "
+        "and pl_trandurh is not null and pl_tranmid is not null "
+        "order by toi asc"
+    )
+    df = _tap_query(query)
+    return df.head(limit)
+
+
 def fetch_stellar_params(hostname: str) -> pd.DataFrame:
     """Fetch stellar parameters (radius, mass, luminosity, Teff) for a host star.
 

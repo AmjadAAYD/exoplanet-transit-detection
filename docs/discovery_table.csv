@@ -1,0 +1,26 @@
+toi,catalog_period,recovered_by_our_pipeline,depth_source,planet_radius_re_median,planet_radius_re_lo,planet_radius_re_hi,eq_temp_k_median,hz_verdict
+TOI-1001.01,1.932,True,our BLS,1.998,1.911,2.091,2569.496,too hot
+TOI-1007.01,6.999,True,our BLS,4.97,4.736,5.219,1854.057,too hot
+TOI-1011.01,2.471,False,catalog (not independently recovered),1.694,1.606,1.787,1354.239,too hot
+TOI-1019.01,5.234,True,our BLS,8.744,8.481,9.024,1723.212,too hot
+TOI-1027.01,3.283,False,catalog (not independently recovered),2.924,2.671,3.192,872.318,too hot
+TOI-1027.02,11.029,False,catalog (not independently recovered),3.049,2.786,3.329,582.474,too hot
+TOI-1027.03,5.011,False,catalog (not independently recovered),2.577,2.354,2.813,757.648,too hot
+TOI-1032.01,5.664,True,our BLS,4.337,4.139,4.548,2607.288,too hot
+TOI-1035.01,6.074,True,our BLS,11.924,11.197,12.697,1733.098,too hot
+TOI-1036.01,3.78,True,our BLS,1.417,1.347,1.492,1378.087,too hot
+TOI-1056.01,5.308,True,our BLS,1.995,1.905,2.091,1304.323,too hot
+TOI-1059.01,9.45,True,our BLS,7.932,7.437,8.458,903.777,marginal
+TOI-1063.01,10.067,False,catalog (not independently recovered),2.535,2.394,2.686,793.698,too hot
+TOI-1074.01,13.943,True,our BLS,2.018,1.891,2.154,657.068,too hot
+TOI-1077.01,1.606,True,our BLS,9.985,9.008,11.024,1511.9,too hot
+TOI-1079.01,3.164,True,our BLS,11.322,10.214,12.5,1820.065,too hot
+TOI-1081.01,2.984,True,our BLS,7.083,0.006,14.64,1340.067,too hot
+TOI-1083.01,12.98,True,our BLS,2.035,1.976,2.098,407.389,too hot
+TOI-1086.01,3.718,True,our BLS,10.477,9.955,11.031,1521.428,too hot
+TOI-1091.01,1.726,False,catalog (not independently recovered),13.572,13.073,14.103,3000.006,too hot
+TOI-1095.01,1.482,True,our BLS,3.158,3.035,3.288,3236.292,too hot
+TOI-1105.01,10.868,False,catalog (not independently recovered),3.361,3.101,3.636,663.76,too hot
+TOI-1116.01,5.01,True,our BLS,1.618,1.533,1.709,1088.992,too hot
+TOI-1117.01,2.228,False,catalog (not independently recovered),2.792,2.658,2.934,1521.319,too hot
+TOI-1125.01,0.772,False,catalog (not independently recovered),3.969,3.836,4.11,4365.252,too hot
