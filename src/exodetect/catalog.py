@@ -43,6 +43,30 @@ def fetch_confirmed_planets(hostname: str) -> pd.DataFrame:
     return _tap_query(query)
 
 
+def fetch_koi_sample(disposition: str, limit: int, min_period: float = 1.0, max_period: float = 50.0) -> pd.DataFrame:
+    """Fetch a sample of Kepler Objects of Interest with a given disposition.
+
+    disposition is one of 'CONFIRMED' or 'FALSE POSITIVE' (the Kepler
+    cumulative table's koi_disposition values). Used to build a labeled
+    training set for the transit classifier from real archive dispositions,
+    not the pre-cleaned Kaggle set. Restricting to min_period/max_period
+    keeps the sample to periods short enough that a single Kepler quarter
+    captures multiple transits, which keeps per-target download and
+    folding cheap.
+    """
+    query = (
+        "select kepid, kepoi_name, koi_disposition, koi_period, koi_time0bk, "
+        "koi_duration, koi_depth "
+        "from cumulative "
+        f"where koi_disposition='{disposition}' "
+        f"and koi_period between {min_period} and {max_period} "
+        "and koi_time0bk is not null and koi_duration is not null "
+        f"order by kepid asc"
+    )
+    df = _tap_query(query)
+    return df.head(limit)
+
+
 def fetch_stellar_params(hostname: str) -> pd.DataFrame:
     """Fetch stellar parameters (radius, mass, luminosity, Teff) for a host star.
 

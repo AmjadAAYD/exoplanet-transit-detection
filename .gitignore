@@ -13,6 +13,7 @@ env/
 # Data (large, re-downloadable from MAST/NASA archive)
 data/raw/
 data/cache/
+data/processed/
 *.fits
 
 # OS
