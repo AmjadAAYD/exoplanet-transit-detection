@@ -7,6 +7,9 @@ Finding real planets in raw NASA light curves, not the pre-cleaned Kaggle set.
 Left: a simulated planet crossing a simulated star, physically sized to TRAPPIST-1 b's real transit depth.
 Right: the actual, detrended K2 light curve, phase-folded at the period this pipeline recovered on its own.
 
+**A showcase site with an interactive demo lives in [`site/`](site/)**, run `npm install && npm run dev` there
+to explore the results, including real, pre-computed light curves and periodograms for 8 curated targets.
+
 ## What this is
 
 Pulls raw light curves directly from the MAST archive via [`lightkurve`](https://docs.lightkurve.org/), detrends

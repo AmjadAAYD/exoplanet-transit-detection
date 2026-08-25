@@ -1,0 +1,206 @@
+---
+interface Props {
+  title: string;
+  description: string;
+}
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    /* Warm, editorial palette: cream page, near-black warm ink, one restrained accent. */
+    --bg: #faf7f1;
+    --bg-raised: #f1ebde;
+    --ink: #1c1a15;
+    --ink-dim: #5f594c;
+    --ink-faint: #8b8474;
+    --rule: #ddd4bf;
+    --rule-strong: #b9ac8e;
+    --accent: #1d3557;
+    --accent-dim: #4a5c78;
+    --good: #35573b;
+    --bad: #7a3226;
+
+    --font-serif: "Newsreader", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Consolas, monospace;
+
+    --measure: 68ch;
+    --wrap: 780px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html {
+    background: var(--bg);
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.4em;
+    color: var(--ink);
+  }
+
+  h2 { font-size: 1.9rem; font-style: italic; font-weight: 500; }
+  h3 { font-size: 1.3rem; }
+
+  p { margin: 0 0 1.1em; max-width: var(--measure); }
+
+  a {
+    color: var(--accent);
+    text-decoration-color: var(--rule-strong);
+    text-underline-offset: 3px;
+    transition: text-decoration-color 180ms ease-out;
+  }
+  a:hover { text-decoration-color: var(--accent); }
+
+  em { font-style: italic; }
+  strong { font-weight: 600; }
+
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  .wrap {
+    max-width: var(--wrap);
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  .section {
+    padding: 64px 0;
+    border-top: 1px solid var(--rule);
+  }
+
+  .section:first-of-type { border-top: none; }
+
+  .kicker {
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.72rem;
+    color: var(--ink-faint);
+    margin-bottom: 0.9em;
+  }
+
+  .kicker::before {
+    content: "\203A  ";
+  }
+
+  /* Data tables: hairline rules, tabular mono numerals, no card/box. */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 9px 14px 9px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  tbody tr {
+    transition: background-color 150ms ease-out;
+  }
+  tbody tr:hover {
+    background-color: var(--bg-raised);
+  }
+
+  th {
+    color: var(--ink-faint);
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  td.num, th.num {
+    text-align: right;
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 0.9rem;
+  }
+
+  /* Plain-text result markers, no pill badges. */
+  .mark { font-family: var(--font-mono); font-size: 0.85em; }
+  .mark-good { color: var(--good); }
+  .mark-bad { color: var(--ink-faint); }
+
+  .caveat {
+    border-left: 2px solid var(--accent);
+    padding: 4px 0 4px 20px;
+    font-size: 0.95rem;
+    color: var(--ink-dim);
+  }
+
+  .caveat strong { color: var(--ink); }
+
+  code {
+    font-family: var(--font-mono);
+    background: var(--bg-raised);
+    padding: 1px 5px;
+    font-size: 0.86em;
+  }
+
+  figure { margin: 0; }
+  figcaption {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--ink-faint);
+    margin-top: 12px;
+    line-height: 1.5;
+  }
+
+  /* Large-numeral pull quotes for headline stats. */
+  .stat {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin: 6px 0;
+  }
+  .stat-num {
+    font-family: var(--font-mono);
+    font-size: 2.6rem;
+    font-weight: 500;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat-den { color: var(--ink-faint); font-size: 1.4rem; font-family: var(--font-mono); }
+  .stat-label { color: var(--ink-dim); font-size: 0.98rem; }
+</style>

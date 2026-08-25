@@ -1,0 +1,55 @@
+---
+---
+
+<section class="section" id="discovery">
+  <div class="wrap">
+    <p class="kicker">Step 3: point it at the unknown</p>
+    <h2>25 real, unconfirmed TESS candidates</h2>
+    <p>
+      Same pipeline, real TESS Objects of Interest still flagged as planet candidates by the archive, nobody
+      has fully verified these yet. For each one: download the light curve, detrend, run this pipeline's own
+      BLS search bounded around the catalog's reported period, an independent check rather than just
+      trusting the catalog value, then physically characterize whatever depth is used.
+    </p>
+
+    <div class="stat-row">
+      <div class="stat">
+        <span class="stat-num">25<span class="stat-den">/25</span></span>
+        <span class="stat-label">candidates characterized</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">16<span class="stat-den">/25</span></span>
+        <span class="stat-label">independently re-detected by this pipeline's own BLS, within 1%</span>
+      </div>
+    </div>
+
+    <p>
+      Every candidate in this batch (all under 15-day orbital periods) comes back too hot for its star's
+      habitable zone, physically expected: short orbital periods mean small semi-major axes. Full table
+      with per-candidate radius, orbital distance, and equilibrium temperature (each with a Monte Carlo
+      uncertainty range, not a single precise-looking number):
+      <a href="https://github.com/AmjadAAYD/exoplanet-transit-detection/blob/main/docs/discovery_table.csv">discovery_table.csv</a>.
+    </p>
+
+    <p class="caveat">
+      <strong>None of these are confirmed planets.</strong> This pipeline flags transit-like signals, it
+      does not confirm them. Real confirmation needs follow-up spectroscopy or radial-velocity data outside
+      the scope of this project, the same first step real discovery pipelines take, not a discovery in
+      itself.
+    </p>
+  </div>
+</section>
+
+<style>
+  .stat-row {
+    display: flex;
+    gap: 56px;
+    margin: 40px 0 32px;
+    flex-wrap: wrap;
+  }
+  .stat-row .stat-label { max-width: 26ch; }
+
+  @media (max-width: 560px) {
+    .stat-row { gap: 32px; }
+  }
+</style>

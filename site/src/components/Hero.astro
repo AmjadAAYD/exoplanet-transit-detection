@@ -1,0 +1,50 @@
+---
+---
+
+<header class="hero">
+  <div class="wrap">
+    <p class="kicker">Raw NASA light curves, not the Kaggle set</p>
+    <h1>Finding real planets in raw telescope data</h1>
+    <p class="dek">
+      A from-scratch transit-detection pipeline: pull raw photometry from NASA's public archive, detrend it,
+      run the same classical search astronomers use, and check the answers against known planets before
+      pointing it at real, unconfirmed candidates.
+    </p>
+
+    <figure class="hero-figure">
+      <img
+        src="/images/trappist1b_sync_animation.gif"
+        alt="A simulated planet crossing a simulated star, synced to the real dip in TRAPPIST-1's light curve"
+        width="1160"
+        height="480"
+      />
+      <figcaption>
+        Figure 1. TRAPPIST-1 b: a simulated transit, physically sized to the real ~0.7% depth, synced to the
+        actual, detrended K2 light curve, phase-folded at the period this pipeline recovered on its own.
+      </figcaption>
+    </figure>
+  </div>
+</header>
+
+<style>
+  .hero {
+    padding: 80px 0 0;
+  }
+  h1 {
+    font-size: clamp(2.1rem, 4.4vw, 3.1rem);
+    max-width: 15ch;
+    margin-bottom: 0.3em;
+  }
+  .dek {
+    font-size: 1.2rem;
+    color: var(--ink-dim);
+    max-width: 56ch;
+    margin-bottom: 48px;
+  }
+  .hero-figure img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid var(--rule);
+  }
+</style>
