@@ -49,13 +49,13 @@ const summary = [
               <tr>
                 <td>{r.planet}</td>
                 <td class="num">{r.published_period_days.toFixed(6)}</td>
-                <td class="num">{r.recovered_period_days ? r.recovered_period_days.toFixed(6) : "—"}</td>
-                <td class="num">{r.error_percent !== null && r.error_percent !== undefined ? `${r.error_percent > 0 ? "+" : ""}${r.error_percent}%` : "—"}</td>
+                <td class="num">{r.recovered_period_days ? r.recovered_period_days.toFixed(6) : "–"}</td>
+                <td class="num">{r.error_percent !== null && r.error_percent !== undefined ? `${r.error_percent > 0 ? "+" : ""}${r.error_percent}%` : "–"}</td>
                 <td>
                   {r.matched ? (
                     <span class="mark mark-good">✓ recovered</span>
                   ) : (
-                    <span class="mark mark-bad">— not recovered</span>
+                    <span class="mark mark-bad">✗ not recovered</span>
                   )}
                 </td>
               </tr>

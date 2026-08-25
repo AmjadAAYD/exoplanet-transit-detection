@@ -29,7 +29,7 @@ const { title, description } = Astro.props;
 
 <style is:global>
   :root {
-    /* Warm, editorial palette — cream page, near-black warm ink, one restrained accent. */
+    /* Warm, editorial palette: cream page, near-black warm ink, one restrained accent. */
     --bg: #faf7f1;
     --bg-raised: #f1ebde;
     --ink: #1c1a15;
@@ -83,11 +83,17 @@ const { title, description } = Astro.props;
     color: var(--accent);
     text-decoration-color: var(--rule-strong);
     text-underline-offset: 3px;
+    transition: text-decoration-color 180ms ease-out;
   }
   a:hover { text-decoration-color: var(--accent); }
 
   em { font-style: italic; }
   strong { font-weight: 600; }
+
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
 
   .wrap {
     max-width: var(--wrap);
@@ -112,7 +118,7 @@ const { title, description } = Astro.props;
   }
 
   .kicker::before {
-    content: "— ";
+    content: "\203A  ";
   }
 
   /* Data tables: hairline rules, tabular mono numerals, no card/box. */
@@ -126,6 +132,13 @@ const { title, description } = Astro.props;
     text-align: left;
     padding: 9px 14px 9px 0;
     border-bottom: 1px solid var(--rule);
+  }
+
+  tbody tr {
+    transition: background-color 150ms ease-out;
+  }
+  tbody tr:hover {
+    background-color: var(--bg-raised);
   }
 
   th {
@@ -144,7 +157,7 @@ const { title, description } = Astro.props;
     font-size: 0.9rem;
   }
 
-  /* Plain-text result markers — no pill badges. */
+  /* Plain-text result markers, no pill badges. */
   .mark { font-family: var(--font-mono); font-size: 0.85em; }
   .mark-good { color: var(--good); }
   .mark-bad { color: var(--ink-faint); }

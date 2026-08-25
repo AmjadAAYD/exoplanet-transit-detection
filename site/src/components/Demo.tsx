@@ -34,7 +34,7 @@ interface TargetData {
 }
 
 function fmtRange(v?: [number, number, number], unit = "") {
-  if (!v) return "—";
+  if (!v) return "–";
   return `${v[0].toFixed(2)}${unit} (${v[1].toFixed(2)}–${v[2].toFixed(2)})`;
 }
 
@@ -145,7 +145,7 @@ export default function Demo() {
                 </div>
                 <div>
                   <div className="verdict-label">Error</div>
-                  <div className="verdict-val">{data.error_percent !== undefined ? `${data.error_percent > 0 ? "+" : ""}${data.error_percent.toFixed(3)}%` : "—"}</div>
+                  <div className="verdict-val">{data.error_percent !== undefined ? `${data.error_percent > 0 ? "+" : ""}${data.error_percent.toFixed(3)}%` : "–"}</div>
                 </div>
                 <div>
                   <div className="verdict-label">System total</div>
@@ -162,7 +162,7 @@ export default function Demo() {
                     {data.recovered_by_pipeline ? (
                       <span className="mark mark-good">✓ yes, by our BLS</span>
                     ) : (
-                      <span className="mark mark-bad">— no, catalog depth used</span>
+                      <span className="mark mark-bad">✗ no, catalog depth used</span>
                     )}
                   </div>
                 </div>
@@ -215,8 +215,10 @@ export default function Demo() {
           text-decoration: underline;
           text-decoration-color: transparent;
           text-underline-offset: 3px;
+          transition: color 180ms ease-out, text-decoration-color 180ms ease-out;
         }
         .pick-link:hover { color: var(--ink); text-decoration-color: var(--rule-strong); }
+        .pick-link:active { transform: translateY(1px); }
         .pick-link.active { color: var(--accent); font-weight: 600; text-decoration-color: var(--accent); }
         .demo-body h3 { margin-bottom: 2px; font-style: italic; }
         .demo-headline { color: var(--ink-dim); margin-bottom: 24px; }
