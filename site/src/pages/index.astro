@@ -1,0 +1,74 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/Hero.astro";
+import ValidationSection from "../components/ValidationSection.astro";
+import ClassifierSection from "../components/ClassifierSection.astro";
+import DiscoverySection from "../components/DiscoverySection.astro";
+import Demo from "../components/Demo";
+---
+
+<BaseLayout
+  title="ExoDetect — finding real planets in raw NASA light curves"
+  description="A from-scratch exoplanet transit-detection pipeline: raw light curves from NASA's archive, a classical BLS search validated on TRAPPIST-1, Kepler-90, and Kepler-186, and 25 real unconfirmed TESS candidates."
+>
+  <Hero />
+  <ValidationSection />
+  <ClassifierSection />
+  <DiscoverySection />
+
+  <section class="section" id="demo">
+    <div class="container">
+      <p class="eyebrow">Try it</p>
+      <h2>Explore the results yourself</h2>
+      <p>
+        Pick a system to see its real, phase-folded light curve and the periodogram this pipeline searched to find
+        it. Curated rather than an open lookup, most of these targets take real MAST downloads and multi-minute
+        BLS searches, better to show real results instantly than make you wait on a live run.
+      </p>
+      <Demo client:load />
+    </div>
+  </section>
+
+  <footer class="section">
+    <div class="container">
+      <p class="eyebrow">Method &amp; code</p>
+      <h2>How it works</h2>
+      <ol class="method-list">
+        <li><strong>Retrieve</strong> raw light curves from MAST via <code>lightkurve</code>.</li>
+        <li><strong>Detrend</strong> with an adaptive Savitzky-Golay filter, remove bad cadences, sigma-clip.</li>
+        <li><strong>Search</strong> with an iterative Box Least Squares, masking each detection before finding the next.</li>
+        <li><strong>Validate</strong> against live NASA Exoplanet Archive queries, checking harmonics so an alias isn't mistaken for a match.</li>
+        <li><strong>Classify</strong> with a CNN and a gradient-boosted baseline trained on real KOI dispositions.</li>
+        <li><strong>Characterize</strong> physically, radius, distance, temperature, habitable-zone verdict, with Monte Carlo uncertainty.</li>
+      </ol>
+      <p>
+        Full code, method write-up, and the honest limitations section:
+        <a href="https://github.com/AmjadAAYD/exoplanet-transit-detection">github.com/AmjadAAYD/exoplanet-transit-detection</a>
+      </p>
+      <p class="citations">
+        NASA Exoplanet Archive · Kepler and TESS missions (NASA) · Lightkurve Collaboration, <em>Lightkurve: Kepler
+        and TESS time series analysis in Python</em>, JOSS, 2018 · Kovács, Zucker &amp; Mazeh, <em>A box-fitting
+        algorithm in the search for periodic transits</em>, A&amp;A, 2002 · Shallue &amp; Vanderburg, <em>Identifying
+        Exoplanets with Deep Learning</em>, AJ, 2018.
+      </p>
+    </div>
+  </footer>
+</BaseLayout>
+
+<style>
+  .method-list {
+    padding-left: 20px;
+    margin: 24px 0;
+  }
+  .method-list li {
+    margin-bottom: 10px;
+    color: var(--text-dim);
+  }
+  .method-list strong { color: var(--text); }
+  .citations {
+    font-size: 0.82rem;
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+</style>

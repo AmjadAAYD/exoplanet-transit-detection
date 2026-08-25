@@ -1,0 +1,59 @@
+---
+---
+
+<section class="section" id="classifier">
+  <div class="container">
+    <p class="eyebrow">Step 2: BLS alone vs. a learned vetting step</p>
+    <h2>Does a classifier agree with the search?</h2>
+    <p>
+      Trained a small CNN and a gradient-boosted model on real Kepler KOI dispositions (confirmed planets and
+      false positives, not the pre-cleaned Kaggle set), then asked both to vet the 23 real detections from the
+      validation systems above, where the catalog match already tells us which detections were real.
+    </p>
+
+    <div class="compare-row">
+      <div class="card compare-card">
+        <div class="compare-label">CNN (folded local view)</div>
+        <div class="compare-num good">69.6%</div>
+        <div class="compare-sub">agreement with ground truth</div>
+      </div>
+      <div class="card compare-card">
+        <div class="compare-label">Gradient-boosted (5 features)</div>
+        <div class="compare-num bad">34.8%</div>
+        <div class="compare-sub">worse than the 73.9% majority baseline</div>
+      </div>
+    </div>
+
+    <figure class="figure">
+      <img src="/images/bls_vs_classifier_disagreements.png" alt="Three TRAPPIST-1 transits with a clean, visually obvious dip that the gradient-boosted model scored as unlikely" loading="lazy" />
+      <figcaption>
+        Three real TRAPPIST-1 planets, each showing a clean, symmetric, unambiguous transit, that the
+        gradient-boosted baseline scored as unlikely to be real. The CNN's learned shape representation
+        generalized better to these targets than a small hand-engineered feature set trained on a different
+        random sample of KOIs. Reported as the interesting finding it is, not smoothed over.
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<style>
+  .compare-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin: 32px 0 40px;
+  }
+  .compare-card { text-align: center; }
+  .compare-label { color: var(--text-dim); font-size: 0.88rem; margin-bottom: 10px; }
+  .compare-num { font-size: 2.6rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .compare-num.good { color: var(--good); }
+  .compare-num.bad { color: var(--bad); }
+  .compare-sub { color: var(--text-dim); font-size: 0.85rem; margin-top: 4px; }
+  .figure { margin: 0; }
+  .figure img { width: 100%; border-radius: 12px; border: 1px solid var(--border); }
+  .figure figcaption { font-size: 0.88rem; margin-top: 14px; color: var(--text-dim); }
+
+  @media (max-width: 640px) {
+    .compare-row { grid-template-columns: 1fr; }
+  }
+</style>

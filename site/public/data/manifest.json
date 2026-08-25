@@ -1,0 +1,50 @@
+[
+  {
+    "slug": "trappist1",
+    "name": "TRAPPIST-1",
+    "category": "validation",
+    "headline": "6 of 7 planets recovered, within 0.033%"
+  },
+  {
+    "slug": "kepler90",
+    "name": "Kepler-90",
+    "category": "validation",
+    "headline": "6 of 8 planets recovered, within 0.006%"
+  },
+  {
+    "slug": "kepler186",
+    "name": "Kepler-186",
+    "category": "validation",
+    "headline": "5 of 5 planets recovered, including the habitable-zone Kepler-186f"
+  },
+  {
+    "slug": "toi-1059.01",
+    "name": "TOI-1059.01",
+    "category": "discovery",
+    "headline": "marginal, 7.9 Earth radii"
+  },
+  {
+    "slug": "toi-1001.01",
+    "name": "TOI-1001.01",
+    "category": "discovery",
+    "headline": "too hot, 2.0 Earth radii"
+  },
+  {
+    "slug": "toi-1035.01",
+    "name": "TOI-1035.01",
+    "category": "discovery",
+    "headline": "too hot, 11.9 Earth radii"
+  },
+  {
+    "slug": "toi-1125.01",
+    "name": "TOI-1125.01",
+    "category": "discovery",
+    "headline": "too hot, 4.0 Earth radii"
+  },
+  {
+    "slug": "toi-1083.01",
+    "name": "TOI-1083.01",
+    "category": "discovery",
+    "headline": "too hot, 2.0 Earth radii"
+  }
+]
