@@ -39,6 +39,29 @@ them, and runs a classical Box Least Squares (BLS) transit search, the same meth
 spectroscopy or radial-velocity data outside the scope of this project. This caveat is stated explicitly wherever
 a TOI result appears, both in the code's output and in the table below.
 
+## From raw data to a detection
+
+Raw K2 photometry looks nothing like a clean textbook light curve. This is TRAPPIST-1's actual K2 Campaign 12
+data, straight off MAST, no cleaning:
+
+![TRAPPIST-1 raw light curve, full of instrument drift and outliers](docs/figures/trappist1_raw.png)
+
+Detrending (NaN removal, quality-flag filtering, a Savitzky-Golay flatten, sigma-clipping) turns that into
+something a period search can actually work with:
+
+![TRAPPIST-1 raw vs detrended light curve](docs/figures/trappist1_detrended.png)
+
+TRAPPIST-1 is a faint M8 dwarf, so even after detrending, per-cadence noise runs around ±15%, against real
+transit depths under 1%. The iterative BLS search below finds the periods anyway by folding many transit
+cycles together, exactly what the classical method is built for. Detections are color-coded by whether they
+matched a published planet:
+
+<table><tr>
+<td><img src="docs/figures/trappist1_bls_detections.png" alt="TRAPPIST-1 BLS detections, matched vs unmatched" width="280"></td>
+<td><img src="docs/figures/kepler90_bls_detections.png" alt="Kepler-90 BLS detections, matched vs unmatched" width="280"></td>
+<td><img src="docs/figures/kepler186_bls_detections.png" alt="Kepler-186 BLS detections, matched vs unmatched" width="280"></td>
+</tr></table>
+
 ## Results
 
 ### Validation: recovering known planets from raw data
@@ -54,10 +77,6 @@ recovery, no harmonics needed. The planets that were *not* recovered (TRAPPIST-1
 as misses, not hidden, most likely noise or aliasing after the stronger signals in each system were masked out
 during the iterative search.
 
-TRAPPIST-1's raw K2 photometry has real per-cadence noise of roughly ±15% (it is a faint M8 dwarf), against real
-transit depths of well under 1%. BLS recovers the periods anyway by folding many transit cycles together, this is
-exactly what the classical method is built for.
-
 ### BLS alone vs. BLS-plus-classifier vetting
 
 Applied both trained classifiers to the 23 real BLS detections from the validation targets above, where the
@@ -68,11 +87,13 @@ catalog match gives ground truth for whether each detection was a real planet.
 | CNN (folded local view) | **69.6%** | 66.7% |
 | Gradient-boosted (5 hand-engineered features) | 34.8% (worse than the 73.9% majority baseline) | 53.3% (exactly the majority baseline) |
 
-The GBM baseline gets several *visually obvious* transits wrong, see
-[`docs/figures/bls_vs_classifier_disagreements.png`](docs/figures/bls_vs_classifier_disagreements.png): three
-TRAPPIST-1 planets with a clean, symmetric, unambiguous dip that it scored as unlikely. Reported as the interesting
-finding it is: a CNN's learned shape representation generalized better to these specific validation targets than a
-small hand-engineered feature set trained on a different random sample of KOIs.
+The GBM baseline gets several *visually obvious* transits wrong:
+
+![Three TRAPPIST-1 transits the gradient-boosted model scored as unlikely, despite a clean, obvious dip](docs/figures/bls_vs_classifier_disagreements.png)
+
+Reported as the interesting finding it is: a CNN's learned shape representation generalized better to these
+specific validation targets than a small hand-engineered feature set trained on a different random sample of
+KOIs.
 
 ### Discovery: 25 real, unconfirmed TESS candidates
 
@@ -86,6 +107,21 @@ Full table: [`docs/discovery_table.csv`](docs/discovery_table.csv).
 
 **None of these are confirmed planets.** They are candidates a from-scratch pipeline flagged and physically
 characterized, the same first step real discovery pipelines take, not a discovery in itself.
+
+## The showcase site
+
+[`site/`](site/) is a static Astro site presenting all of the above as one page: the sync animation up top,
+the validation and discovery tables, the classifier comparison, and a curated interactive demo where you can
+pick any of the 8 targets above and see its real phase-folded light curve and BLS periodogram, with a live
+hover crosshair, rendered from pre-computed data checked into the repo.
+
+Design-wise it went through two passes worth documenting honestly: the first version worked but read as
+generic AI-template output, dark gradient background, pill-shaped buttons, identical rounded cards
+everywhere. The second pass audited that against real design references (an editorial/long-form style
+direction, chosen over modern-minimal and technical-dark alternatives) and added actual motion (GSAP
+scroll-triggered reveals, Lenis smooth scroll) instead of a static page, all gated behind
+`prefers-reduced-motion` per standard accessibility guidance. See [`site/README.md`](site/README.md) for
+the site's own structure and how to regenerate its demo data.
 
 ## Method
 
@@ -111,7 +147,9 @@ characterized, the same first step real discovery pipelines take, not a discover
 ## Repo structure
 
 - `src/exodetect/`: the pipeline package
-- `notebooks/`: one script per phase, `phase1_*` through `phase6_*`, each runnable standalone against cached data
+- `notebooks/`: one script per phase (`phase1_*` through `phase6_*`), each runnable standalone against cached
+  data, plus `export_site_data.py` which generates the showcase site's demo data
+- `site/`: the showcase website (Astro), see [`site/README.md`](site/README.md)
 - `docs/`: validation and discovery tables, figures, the project plan
 - `data/cache/`, `data/processed/`: local caches and derived datasets (gitignored, reproducible by rerunning the
   phase scripts)
@@ -120,12 +158,15 @@ characterized, the same first step real discovery pipelines take, not a discover
 
 ```bash
 pip install -r requirements.txt
-python notebooks/phase1_trappist1_pull.py   # confirm data retrieval
-python notebooks/phase3_trappist1_bls.py    # BLS validation
-python notebooks/phase4_build_dataset.py    # build the classifier training set (downloads ~60 targets)
+python notebooks/phase1_trappist1_pull.py     # confirm data retrieval
+python notebooks/phase2_trappist1_detrend.py  # detrending pipeline
+python notebooks/phase3_trappist1_bls.py      # BLS validation (repeat phase3_kepler90_bls.py, phase3_kepler186_bls.py)
+python notebooks/phase4_build_dataset.py      # build the classifier training set (downloads ~60 targets)
 python notebooks/phase4_train_models.py
-python notebooks/phase5_toi_batch.py        # TOI discovery batch (downloads ~25 targets)
+python notebooks/phase4_compare_bls.py        # BLS-vs-classifier comparison
+python notebooks/phase5_toi_batch.py          # TOI discovery batch (downloads ~25 targets)
 python notebooks/phase6_sync_animation.py
+python notebooks/export_site_data.py          # regenerate the showcase site's demo data
 ```
 
 Light curve downloads are cached locally after the first run, MAST's search API is occasionally slow; the phase
