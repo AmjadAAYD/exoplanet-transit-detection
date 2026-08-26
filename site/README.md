@@ -18,8 +18,9 @@ curated interactive demo (real, pre-computed light curves and periodograms for 8
 
 ```sh
 npm install
-npm run dev      # localhost:4321
-npm run build    # static output to dist/
+npm run dev       # dev server at localhost:4321
+npm run build     # static output to dist/
+npm run preview   # serve the production build locally, also at localhost:4321
 ```
 
 ## Regenerating the demo data

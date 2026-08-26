@@ -7,8 +7,18 @@ Finding real planets in raw NASA light curves, not the pre-cleaned Kaggle set.
 Left: a simulated planet crossing a simulated star, physically sized to TRAPPIST-1 b's real transit depth.
 Right: the actual, detrended K2 light curve, phase-folded at the period this pipeline recovered on its own.
 
-**A showcase site with an interactive demo lives in [`site/`](site/)**, run `npm install && npm run dev` there
-to explore the results, including real, pre-computed light curves and periodograms for 8 curated targets.
+**A showcase site with an interactive demo lives in [`site/`](site/).** It runs entirely locally, no
+hosting or deployment needed, and the demo data (real, pre-computed light curves and periodograms for 8
+curated targets) is already checked into the repo, so it works right after cloning:
+
+```bash
+cd site
+npm install
+npm run dev
+```
+
+Then open `http://localhost:4321`. Requires [Node.js](https://nodejs.org/) 22 or later. To see the actual
+production build instead of the dev server, use `npm run build && npm run preview` instead of `npm run dev`.
 
 ## What this is
 
